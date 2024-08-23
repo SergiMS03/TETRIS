@@ -3,6 +3,8 @@
         "iostream": "cpp",
         "string": "cpp",
         "format": "cpp",
-        "tuple": "cpp"
+        "tuple": "cpp",
+        "new": "cpp",
+        "algorithm": "cpp"
     }
 }

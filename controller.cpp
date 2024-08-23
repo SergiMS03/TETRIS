@@ -10,6 +10,7 @@ using namespace std;
 
 Controller::Controller(){       // Constructor
     auto start = chrono::system_clock::now();
+    table = new Table();
         while (!gameOver)
         {
             auto now = chrono::system_clock::now();
@@ -19,25 +20,21 @@ Controller::Controller(){       // Constructor
                 gameOver = Render();
             }
         }
+    delete table;
 }
 
 bool Controller::Render(){
     cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";  
-    if(table == nullptr){   
-        table = new Table();
-    }else{
-        table->RebootTable();
-    }
+    table->RebootTable();
 
     if(fallingForm == nullptr){
         fallingForm = new Form();
-    }else{
-        if(!table->Fall(fallingForm)){
-            listPieces.Add(fallingForm);
-            fallingForm = nullptr;
-        }
     }
-    table->CalcTable(&listPieces, fallingForm);
+    bool continueSameForm = table->QuickCalc(&listPieces, fallingForm);
+    if(!continueSameForm){
+        listPieces.Add(fallingForm);
+        fallingForm = nullptr;
+    }
     table->RenderTable();
     return false;
 }

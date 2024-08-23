@@ -6,6 +6,7 @@
 class Form{       
     public:             
     bool isNull;
+    int color;
     List<Vectors2D> pieces;
     string formName;
 
@@ -17,6 +18,7 @@ class Form{
     void setForm();
 
     void PieceFall(int PiecePosition);
+    void PieceFall();
     // Método para establecer el estado nulo
     void setNull();
 };

@@ -6,7 +6,7 @@
 
 class Controller{       // The class
     public:             // Access specifier
-    const float gapTime = 1000;
+    const float gapTime = 500;
     bool gameOver = false;
     Form* fallingForm = nullptr;
     List<Form*> listPieces;
