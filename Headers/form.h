@@ -17,7 +17,7 @@ class Form{
 
     void setForm();
 
-    void PieceFall(int PiecePosition);
+    void PieceMove(int PiecePosition);
     void PieceFall();
     // Método para establecer el estado nulo
     void setNull();

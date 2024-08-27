@@ -18,8 +18,7 @@ void Form::setForm(){
     int form = 1;
     Random *rand = new Random();
     color = rand->RandomIntBtw(CmdColors::MIN_COLOR_VALUE, CmdColors::MAX_COLOR_VALUE);
-    cout << color;
-    int xPosition = rand->RandomIntBtw(0, Table::table_width - 1);
+    int xPosition = rand->RandomIntBtw(0, TABLE_WIDTH - 1);
     //int xPosition = 0;
     switch (form)
     {
@@ -32,9 +31,12 @@ void Form::setForm(){
     delete rand;
 }
 
-void Form::PieceFall(int piecePosition){
-    Vectors2D* piece = pieces.GetMem(piecePosition);
-    piece->y++;
+void Form::PieceMove(int mov){
+    for (int i = 0; i < this->pieces.length; i++)
+    {
+        Vectors2D* piece = this->pieces.GetMem(i);
+        piece->x += mov;
+    }
 }
 
 void Form::PieceFall(){

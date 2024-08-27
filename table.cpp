@@ -9,83 +9,6 @@ Table::Table(){
     RebootTable();
 }
 
-bool Table::Fall(Form *fallingForm){
-    bool canFall = true;
-    int maxY = -1;//Buscamos el punto mas bajo de la pieza (la Y mas grande)
-    for (int i = 0; i < fallingForm->pieces.length; i++)
-    {
-        Vectors2D vec = fallingForm->pieces.Get(i);
-        if(maxY < vec.y){
-            maxY = vec.y;
-        }
-    }
-    List<Vectors2D> *bottomPieces = new List<Vectors2D>();//Pasamos Vector2D, no una referencia, así después podemos modificar y eliminar valores
-    for (int i = 0; i < fallingForm->pieces.length; i++)
-    {
-        Vectors2D vec = fallingForm->pieces.Get(i);
-        bottomPieces->Add(vec);
-    }
-    
-    for (int i = 0; i < bottomPieces->length; i++)//Bottom pieces han de detectar el suelo, linea 9, si esta en el suelo no cae ninguna pieza mas
-    {
-        if (bottomPieces->Get(i).y >= table_height - 1)
-        {
-            canFall = false;
-        }
-    }
-    if(canFall){
-        for (int i = 0; i < fallingForm->pieces.length; i++)
-        {
-            fallingForm->PieceFall(i);
-        }
-        
-    }
-    bottomPieces->~List();
-    return canFall;
-}
-
-void Table::CalcTable(List<Form*> *forms, Form *fallingForm){    
-    ptr_table = tableStart;
-    if(forms->length > 0){
-        for (int y = 0; y < table_height; y++)
-        {
-            for (int x = 0; x < table_width; x++)
-            {
-                if(GetMatches(x, y, forms)){
-                    
-                    *ptr_table = "x";
-                }else{
-
-                }
-                ptr_table++;
-            }
-            
-        }
-    }
-
-    //Borrar luego y implementar bien si funciona
-    ptr_table = tableStart;
-    if(fallingForm != nullptr){
-        for (int y = 0; y < table_height; y++)
-        {
-            for (int x = 0; x < table_width; x++)
-            {
-                for (int i = 0; i < fallingForm->pieces.length; i++)
-                {
-                    if(fallingForm->pieces.Get(i).x == x && fallingForm->pieces.Get(i).y == y){
-                        *ptr_table = "x";
-                    }
-                }
-                
-                ptr_table++;
-            }
-            
-        }
-    }
-    //Borrar luego y implementar bien si funciona
-    
-}
-
 bool Table::GetMatches(int x, int y, List<Form*> *forms){
     for (int i = 0; i < forms->length; i++)
     {
@@ -102,18 +25,18 @@ bool Table::GetMatches(int x, int y, List<Form*> *forms){
 void Table::RenderTable(){
     
     ptr_table = tableStart;
-    for (int i = 0; i < table_height; i++)
+    for (int i = 0; i < TABLE_HEIGHT; i++)
     {
-        for (int j = 0; j < table_width; j++)
+        for (int j = 0; j < TABLE_WIDTH; j++)
         {
             
-            if(*ptr_table == "x"){
-                Console::TextColor(CmdColors::red);
-                cout << *ptr_table << " ";
+            if(*ptr_table != EMPTY_BOX){
+                Console::TextColor(*ptr_table);
+                cout << "@ ";
                 Console::TextColor(CmdColors::light_grey);
             }
             else{
-                cout << *ptr_table << " ";
+                cout << "o ";
             }
             
             ptr_table++;
@@ -125,14 +48,15 @@ void Table::RenderTable(){
 void Table::RebootTable(){
     
     ptr_table = tableStart;
-    for (int i = 0; i < table_height * table_width; i++)
+    for (int i = 0; i < TABLE_HEIGHT * TABLE_WIDTH; i++)
     {
-        *ptr_table = "o";
+        *ptr_table = EMPTY_BOX;
         ptr_table++;
     }
 }
 
-bool Table::QuickCalc(List<Form*> *forms, Form *fallingForm){    
+bool Table::QuickCalc(List<Form*> *forms, Form *fallingForm, char direction){    
+    //Carga las piezas en la tabla 
     for (int i = 0; i < forms->length; i++)
     {
         Form *form = forms->Get(i);
@@ -142,51 +66,87 @@ bool Table::QuickCalc(List<Form*> *forms, Form *fallingForm){
             Vectors2D *vec = form->pieces.GetMem(j);
             int position = CoordsToPosition(vec->x, vec->y);
             ptr_table = ptr_table + position; 
-            *ptr_table = "x";
+            *ptr_table = form->color;
         }
     }
     
-    return ColisionCalc(forms, fallingForm);
+    bool canFall = ColisionCalc(fallingForm, direction);
+
+    FallingFormCalc(fallingForm);
+    
+    return canFall;
 }
 
-bool Table::ColisionCalc(List<Form*> *forms, Form *fallingForm){
-    const int ROW_OPERATOR = table_height;
-    const int COLUMN_OPERATOR = 1;
+bool Table::ColisionCalc(Form *fallingForm, char direction){
+    ptr_table = tableStart;
+    const int ROW_LENGTH = TABLE_WIDTH;
     bool canFall = true;
-    for (int i = 0; i < fallingForm->pieces.length && canFall; i++)
-    {
-        ptr_table = tableStart;
-        Vectors2D *vec = fallingForm->pieces.GetMem(i);
-        int position = CoordsToPosition(vec->x, vec->y);
-        ptr_table = ptr_table + (position + ROW_OPERATOR);
-        if(*ptr_table == "x" || position + ROW_OPERATOR > 100){
-            canFall = false; //Si tiene una pieza abajo no cae (mira todas las pieza de la forma)
-        }
+    bool canMove = true;
+
+    int rowOperator = 0;
+    if(direction == 'L'){
+        rowOperator = MOVE_LEFT;
+        
+    }
+    else if(direction == 'R'){
+        rowOperator = MOVE_RIGHT;
+        
     }
 
-    Form *formToPaint = fallingForm;
+    //Comprueba si la pieza puede moverse
+    if (rowOperator == 0) canMove = false;
+    for (int i = 0; i < fallingForm->pieces.length && canMove; i++)
+    {
+        Vectors2D *vec = fallingForm->pieces.GetMem(i);
+        int position = CoordsToPosition(vec->x, vec->y);
+
+        if(position + rowOperator <= 100 && position + rowOperator > 0){
+            if (position % TABLE_WIDTH == 0 && rowOperator == MOVE_LEFT) canMove = false;
+            if (position % TABLE_WIDTH == 9 && rowOperator == MOVE_RIGHT) canMove = false;
+            if (*(ptr_table + (position + rowOperator)) != EMPTY_BOX) canMove = false;
+        }else{
+            canMove = false;
+        }
+    }
+    if(canMove){
+        fallingForm->PieceMove(rowOperator);
+    }
+    
+    //Comprueba si la pieza puede caerse despues de (si lo ha hecho) moverse
+    for (int i = 0; i < fallingForm->pieces.length && canFall; i++)
+    {
+        Vectors2D *vec = fallingForm->pieces.GetMem(i);
+        int position = CoordsToPosition(vec->x, vec->y);
+
+        if(position + ROW_LENGTH <= 100){
+            if(*(ptr_table + (position + ROW_LENGTH)) != EMPTY_BOX) canFall = false;
+        }else{
+            canFall = false;
+        }
+    }
     if(canFall){
         fallingForm->PieceFall();
     }
 
-    for (int i = 0; i < formToPaint->pieces.length; i++)
+    return canFall;
+}
+
+void Table::FallingFormCalc(Form *fallingForm){
+for (int i = 0; i < fallingForm->pieces.length; i++)
     {
         ptr_table = tableStart;
-        Vectors2D *vec = formToPaint->pieces.GetMem(i);
+        Vectors2D *vec = fallingForm->pieces.GetMem(i);
         int position = CoordsToPosition(vec->x, vec->y);
         if(position >= 0){
             ptr_table = ptr_table + position; 
-            *ptr_table = "x";
+            *ptr_table = fallingForm->color;
         }
     }
-    
-    formToPaint = nullptr;
-    return canFall;
 }
 
 int Table::CoordsToPosition(int x, int y){
     if(x < 0 || y < 0){
         return -1;
     }
-    return ((y * table_width) + x);
+    return ((y * TABLE_WIDTH) + x);
 }
