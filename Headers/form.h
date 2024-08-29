@@ -1,13 +1,17 @@
 #pragma once
 #include "doubleLinkedList.h"
 #include "vectors2d.h"
+#include "piece.h"
 #include "..\Headers\random.h"
+
+
+class Piece;//Dependencia circular
 
 class Form{       
     public:             
     bool isNull;
     int color;
-    List<Vectors2D> pieces;
+    List<Piece*> pieces;
     string formName;
 
     virtual ~Form() {}

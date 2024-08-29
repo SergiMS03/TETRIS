@@ -1,6 +1,6 @@
 #pragma once
 #include "form.h"
-#include "vectors2d.h"
+#include "piece.h"
 #include "doubleLinkedList.h"
 
 
@@ -9,11 +9,11 @@ class Square{
     public:
     const string NAME = "square";
     const int MAX_COLUMN = 8;
-    List<Vectors2D> vectsSqr;
+    List<Piece*> piecesSquare;
     
-    Square(int x);
+    Square(int x, Form *form);
 
-    Square(int x, int y);
+    Square(int x, int y, Form *form);
 
     void ToString();
 

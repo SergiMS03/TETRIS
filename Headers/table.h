@@ -1,5 +1,6 @@
 #pragma once
 #include "doubleLinkedList.h"
+#include "piece.h"
 #include "form.h"
 
 #define TABLE_HEIGHT 10
@@ -10,9 +11,9 @@
 
 class Table {
 public:
-    int table[TABLE_HEIGHT][TABLE_WIDTH];
-    int *tableStart = &table[0][0];
-    int* ptr_table;
+    Piece *table[TABLE_HEIGHT][TABLE_WIDTH];
+    Piece **tableStart = &table[0][0];
+    Piece **ptr_table;
 
     Table();
 
@@ -23,7 +24,7 @@ public:
     bool ColisionCalc(Form *fallingForm, char direction);
     int CoordsToPosition(int x, int y);
 
-    bool GetMatches(int x, int y, List<Form*> *forms);
+    void CheckForLine();
 
     void RenderTable();
 

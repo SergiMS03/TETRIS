@@ -1,47 +1,31 @@
 #include "..\Headers\square.h"
 #include "..\Headers\form.h"
-#include "..\Headers\vectors2d.h"
+#include "..\Headers\piece.h"
 #include <iostream>
 using namespace std;
 
-Square::Square(int x){
+Square::Square(int x, Form *form){
     while (x > MAX_COLUMN)
     {
         x--;
     }
-    Vectors2D *vect1 = new Vectors2D(0 + x, -1);
-    Vectors2D *vect2 = new Vectors2D(1 + x, -1);
-    Vectors2D *vect3 = new Vectors2D(0 + x, 0);
-    Vectors2D *vect4 = new Vectors2D(1 + x, 0);
-    vectsSqr.Add(*vect1);//x y
-    vectsSqr.Add(*vect2);
-    vectsSqr.Add(*vect3);
-    vectsSqr.Add(*vect4);
-    delete vect1;
-    delete vect2;
-    delete vect3;
-    delete vect4;
+    piecesSquare.Add(new Piece(0 + x, -1, form));//x y
+    piecesSquare.Add(new Piece(1 + x, -1, form));
+    piecesSquare.Add(new Piece(0 + x, 0, form));
+    piecesSquare.Add(new Piece(1 + x, 0, form));
 };
 
-Square::Square(int x, int y){
-    Vectors2D *vect1 = new Vectors2D(x, y);
-    Vectors2D *vect2 = new Vectors2D(1 + x, y);
-    Vectors2D *vect3 = new Vectors2D(x, 1 + y);
-    Vectors2D *vect4 = new Vectors2D(1 + x, 1 + y);
-    vectsSqr.Add(*vect1);//x y
-    vectsSqr.Add(*vect2);
-    vectsSqr.Add(*vect3);
-    vectsSqr.Add(*vect4);
-    delete vect1;
-    delete vect2;
-    delete vect3;
-    delete vect4;
+Square::Square(int x, int y, Form *form){
+    piecesSquare.Add(new Piece(x, y, form));//x y
+    piecesSquare.Add(new Piece(1 + x, y, form));
+    piecesSquare.Add(new Piece(x, 1 + y, form));
+    piecesSquare.Add(new Piece(1 + x, 1 + y, form));
 };
 
 void Square::ToString(){
-    for (int i = 0; i < vectsSqr.length; i++)
+    for (int i = 0; i < piecesSquare.length; i++)
     {
-        vectsSqr.Get(i).ToString();
+        piecesSquare.Get(i)->ToString();
     }
     
 }

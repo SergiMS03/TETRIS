@@ -4,6 +4,7 @@
 #include "..\Headers\random.h"
 #include "..\Headers\square.h"
 #include "..\Headers\vectors2d.h"
+#include "..\Headers\piece.h"
 #include "..\Headers\console.h"
 using namespace std;
 
@@ -23,8 +24,8 @@ void Form::setForm(){
     switch (form)
     {
     case 1:
-        Square* sqr = new Square(xPosition);
-        pieces = sqr->vectsSqr;
+        Square* sqr = new Square(xPosition, this);
+        pieces = sqr->piecesSquare;
         formName = sqr->NAME;
         break;
     }
@@ -34,16 +35,16 @@ void Form::setForm(){
 void Form::PieceMove(int mov){
     for (int i = 0; i < this->pieces.length; i++)
     {
-        Vectors2D* piece = this->pieces.GetMem(i);
-        piece->x += mov;
+        Piece* piece = this->pieces.Get(i);
+        piece->vector2d->x += mov;
     }
 }
 
 void Form::PieceFall(){
     for (int i = 0; i < this->pieces.length; i++)
     {
-        Vectors2D* piece = this->pieces.GetMem(i);
-        piece->y++;
+        Piece* piece = this->pieces.Get(i);
+        piece->vector2d->y++;
     }
 }
 

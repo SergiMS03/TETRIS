@@ -1,4 +1,4 @@
-#include "../Headers/console.h"
+#include "..\Headers\console.h"
 
 int CmdColors::MIN_COLOR_VALUE = 1;
 int CmdColors::MAX_COLOR_VALUE = 15;

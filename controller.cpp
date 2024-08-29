@@ -45,10 +45,11 @@ bool Controller::Go(char direction){
     if(fallingForm == nullptr){
         fallingForm = new Form();
     }
-    bool continueSameForm = table->QuickCalc(&listPieces, fallingForm, direction);
-    if(!continueSameForm){
+    bool formContact = table->QuickCalc(&listPieces, fallingForm, direction);
+    if(!formContact){
         listPieces.Add(fallingForm);
         fallingForm = nullptr;
+        //table->CheckForLine();
     }
     table->RenderTable();
     return false;

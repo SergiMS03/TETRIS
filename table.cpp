@@ -9,17 +9,29 @@ Table::Table(){
     RebootTable();
 }
 
-bool Table::GetMatches(int x, int y, List<Form*> *forms){
-    for (int i = 0; i < forms->length; i++)
+void Table::CheckForLine(){
+    ptr_table = tableStart;
+    int y = 0;
+    while (y < TABLE_HEIGHT)
     {
-        for (int j = 0; j < forms->Get(i)->pieces.length; j++)
+        bool line = true; 
+        for (int x = 0; x < TABLE_WIDTH && line; x++)
         {
-            if(forms->Get(i)->pieces.Get(j).x == x && forms->Get(i)->pieces.Get(j).y == y){
-                return true;//Si encuentra la pieza salimos
+             Piece* piece = *(ptr_table + x);
+            if(piece != nullptr){
+                line = false;
+            }
+        }
+        if(line){
+            for (int x = 0; x < TABLE_WIDTH && line; x++)
+            {
+                /*Implementar en DLL borrar por posicion de memoria, y usarlo para eliminar las piezas de la fila. 
+                Después tendremos que bajar las piezas de las filas superiores*/
             }
         }
     }
-    return false;
+    
+    
 }
 
 void Table::RenderTable(){
@@ -30,15 +42,15 @@ void Table::RenderTable(){
         for (int j = 0; j < TABLE_WIDTH; j++)
         {
             
-            if(*ptr_table != EMPTY_BOX){
-                Console::TextColor(*ptr_table);
+            if(*ptr_table != nullptr){
+                Piece *piece = *ptr_table;
+                Console::TextColor(piece->form->color);
                 cout << "@ ";
                 Console::TextColor(CmdColors::light_grey);
             }
             else{
                 cout << "o ";
             }
-            
             ptr_table++;
         }
         cout << "\n";
@@ -50,7 +62,7 @@ void Table::RebootTable(){
     ptr_table = tableStart;
     for (int i = 0; i < TABLE_HEIGHT * TABLE_WIDTH; i++)
     {
-        *ptr_table = EMPTY_BOX;
+        *ptr_table = nullptr;
         ptr_table++;
     }
 }
@@ -63,10 +75,10 @@ bool Table::QuickCalc(List<Form*> *forms, Form *fallingForm, char direction){
         for (int j = 0; j < form->pieces.length; j++)
         {
             ptr_table = tableStart;
-            Vectors2D *vec = form->pieces.GetMem(j);
-            int position = CoordsToPosition(vec->x, vec->y);
+            Piece *piece = form->pieces.Get(j);
+            int position = CoordsToPosition(piece->vector2d->x, piece->vector2d->y);
             ptr_table = ptr_table + position; 
-            *ptr_table = form->color;
+            *ptr_table = piece;
         }
     }
     
@@ -97,13 +109,13 @@ bool Table::ColisionCalc(Form *fallingForm, char direction){
     if (rowOperator == 0) canMove = false;
     for (int i = 0; i < fallingForm->pieces.length && canMove; i++)
     {
-        Vectors2D *vec = fallingForm->pieces.GetMem(i);
-        int position = CoordsToPosition(vec->x, vec->y);
+        Piece *piece = fallingForm->pieces.Get(i);
+        int position = CoordsToPosition(piece->vector2d->x, piece->vector2d->y);
 
         if(position + rowOperator <= 100 && position + rowOperator > 0){
             if (position % TABLE_WIDTH == 0 && rowOperator == MOVE_LEFT) canMove = false;
             if (position % TABLE_WIDTH == 9 && rowOperator == MOVE_RIGHT) canMove = false;
-            if (*(ptr_table + (position + rowOperator)) != EMPTY_BOX) canMove = false;
+            if (*(ptr_table + (position + rowOperator)) != nullptr) canMove = false;
         }else{
             canMove = false;
         }
@@ -115,11 +127,11 @@ bool Table::ColisionCalc(Form *fallingForm, char direction){
     //Comprueba si la pieza puede caerse despues de (si lo ha hecho) moverse
     for (int i = 0; i < fallingForm->pieces.length && canFall; i++)
     {
-        Vectors2D *vec = fallingForm->pieces.GetMem(i);
-        int position = CoordsToPosition(vec->x, vec->y);
+        Piece *piece = fallingForm->pieces.Get(i);
+        int position = CoordsToPosition(piece->vector2d->x, piece->vector2d->y);
 
         if(position + ROW_LENGTH <= 100){
-            if(*(ptr_table + (position + ROW_LENGTH)) != EMPTY_BOX) canFall = false;
+            if(*(ptr_table + (position + ROW_LENGTH)) != nullptr) canFall = false;
         }else{
             canFall = false;
         }
@@ -135,11 +147,11 @@ void Table::FallingFormCalc(Form *fallingForm){
 for (int i = 0; i < fallingForm->pieces.length; i++)
     {
         ptr_table = tableStart;
-        Vectors2D *vec = fallingForm->pieces.GetMem(i);
-        int position = CoordsToPosition(vec->x, vec->y);
+        Piece *piece = fallingForm->pieces.Get(i);
+        int position = CoordsToPosition(piece->vector2d->x, piece->vector2d->y);
         if(position >= 0){
             ptr_table = ptr_table + position; 
-            *ptr_table = fallingForm->color;
+            *ptr_table = piece;
         }
     }
 }
