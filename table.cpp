@@ -9,29 +9,72 @@ Table::Table(){
     RebootTable();
 }
 
-void Table::CheckForLine(){
+int Table::CheckForLine(List<Form*> *forms){
     ptr_table = tableStart;
-    int y = 0;
-    while (y < TABLE_HEIGHT)
+    int obtainedPoints = 0;
+    for (int y = 0; y < TABLE_HEIGHT; y++)    
     {
         bool line = true; 
         for (int x = 0; x < TABLE_WIDTH && line; x++)
         {
-             Piece* piece = *(ptr_table + x);
-            if(piece != nullptr){
+            int position = CoordsToPosition(x, y);
+            Piece *piece = *(ptr_table + position);
+            if(piece == nullptr){
                 line = false;
             }
         }
         if(line){
-            for (int x = 0; x < TABLE_WIDTH && line; x++)
-            {
-                /*Implementar en DLL borrar por posicion de memoria, y usarlo para eliminar las piezas de la fila. 
-                Después tendremos que bajar las piezas de las filas superiores*/
+            DeleteRow(y, forms);
+            obtainedPoints++;
+        }
+    }
+    return obtainedPoints;
+}
+
+bool Table::CheckGameOver(List<Form*> *forms){
+    //Repasar fila 0, a ver si hay alguna forma tocando
+    bool gameOver = false;
+    for (int i = 0; i < forms->length && !gameOver; i++)
+    {
+        Form *currentForm = forms->Get(i);
+        for (int j = 0; j < currentForm->pieces.length && !gameOver; j++)
+        {
+            Piece *piece = currentForm->pieces.Get(j);
+            if(piece->vector2d->y == 0){
+                gameOver = true;
             }
         }
     }
-    
-    
+    return gameOver;
+}
+
+void Table::DeleteRow(int y, List<Form*> *forms){
+    for (int x = 0; x < TABLE_WIDTH; x++)
+    { 
+        //Eliminamos y remplazamos por nullptr en la tabla
+        int position = CoordsToPosition(x, y);
+        Piece *piece = *(ptr_table + position);
+        piece->form->pieces.RemoveByMem(piece);
+        *(ptr_table + position) = nullptr;
+        if(piece->form->pieces.length == 0){
+            forms->RemoveByMem(piece->form);
+            delete (piece->form);
+        }
+
+        //Bajamos la posicion de las piezas 1 de altura
+        for (int i = y; i >= 1; i--)
+        {
+            int currentPosition = CoordsToPosition(x, i);
+            Piece *currentPiece = *(ptr_table + currentPosition);
+            if (currentPiece != nullptr)
+            {
+                currentPiece->vector2d->y++;
+            }
+            *(ptr_table + currentPosition) = *(ptr_table + (currentPosition - TABLE_WIDTH));
+        }
+        int x0 = CoordsToPosition(x, 0);
+        *(ptr_table + x0) = nullptr;
+    } 
 }
 
 void Table::RenderTable(){

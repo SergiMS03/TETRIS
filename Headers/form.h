@@ -19,7 +19,10 @@ class Form{
     // Constructor predeterminado que establece el estado nulo
     Form();
 
+    Form(int x, int y);
+
     void setForm();
+    void setForm(int x, int y);
 
     void PieceMove(int PiecePosition);
     void PieceFall();

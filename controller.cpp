@@ -38,8 +38,9 @@ Controller::Controller(){       // Constructor
 }
 
 bool Controller::Go(char direction){
-    //cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"; 
-    system("cls");
+    cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"; 
+    //system("cls");
+    cout << points << "\n";
     table->RebootTable();
 
     if(fallingForm == nullptr){
@@ -49,10 +50,11 @@ bool Controller::Go(char direction){
     if(!formContact){
         listPieces.Add(fallingForm);
         fallingForm = nullptr;
-        //table->CheckForLine();
+        points += table->CheckForLine(&listPieces);
+        gameOver = table->CheckGameOver(&listPieces);
     }
     table->RenderTable();
-    return false;
+    return gameOver;
 }
 
 

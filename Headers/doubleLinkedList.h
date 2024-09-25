@@ -33,7 +33,7 @@ public:
     T Get(int position);
     T* GetMem(int position);
     void RemoveLast();
-    void RemoveByMem(T* value);
+    void RemoveByMem(T value);
     void ToString();
 };
 
@@ -139,10 +139,10 @@ void List<T>::RemoveLast() {
 }
 
 template<typename T>
-void List<T>::RemoveByMem(T* value) {
+void List<T>::RemoveByMem(T value) {
     Node<T>* currentNode = start;
     while (currentNode != nullptr) {
-        if (&currentNode->value == value) {
+        if (currentNode->value == value) {
             if (currentNode->prev != nullptr) {
                 currentNode->prev->next = currentNode->next;
             }

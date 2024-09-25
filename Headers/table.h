@@ -19,12 +19,14 @@ public:
 
     bool Fall(Form *fallingForm);
  
-    bool QuickCalc(List<Form*> *pieces, Form *fallingForm, char direction);
+    bool QuickCalc(List<Form*> *forms, Form *fallingForm, char direction);
     void FallingFormCalc(Form *fallingForm);
     bool ColisionCalc(Form *fallingForm, char direction);
     int CoordsToPosition(int x, int y);
 
-    void CheckForLine();
+    int CheckForLine(List<Form*> *forms);
+    bool CheckGameOver(List<Form*> *forms);
+    void DeleteRow(int y, List<Form*> *forms);
 
     void RenderTable();
 
