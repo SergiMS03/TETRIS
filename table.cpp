@@ -147,40 +147,50 @@ bool Table::ColisionCalc(Form *fallingForm, char direction){
         rowOperator = MOVE_RIGHT;
         
     }
+    else if(direction == 'S'){
+        rowOperator = 82;
+        
+    }
 
     //Comprueba si la pieza puede moverse
-    if (rowOperator == 0) canMove = false;
+    if (rowOperator == 0 || rowOperator == 82) canMove = false;
     for (int i = 0; i < fallingForm->pieces.length && canMove; i++)
     {
         Piece *piece = fallingForm->pieces.Get(i);
         int position = CoordsToPosition(piece->vector2d->x, piece->vector2d->y);
 
-        if(position + rowOperator <= 100 && position + rowOperator > 0){
-            if (position % TABLE_WIDTH == 0 && rowOperator == MOVE_LEFT) canMove = false;
-            if (position % TABLE_WIDTH == 9 && rowOperator == MOVE_RIGHT) canMove = false;
+        if(position + rowOperator <= (TABLE_HEIGHT * TABLE_WIDTH) && position + rowOperator > 0){
+            if (position == 0 && rowOperator == MOVE_LEFT) canMove = false;
+            if (position == (TABLE_WIDTH - 1) && rowOperator == MOVE_RIGHT) canMove = false;
             if (*(ptr_table + (position + rowOperator)) != nullptr) canMove = false;
         }else{
             canMove = false;
         }
     }
     if(canMove){
-        fallingForm->PieceMove(rowOperator);
+        fallingForm->MovePieces(rowOperator);
     }
     
+    if (rowOperator == 82)
+    {
+        fallingForm->RotateForm();
+    }
+    
+
     //Comprueba si la pieza puede caerse despues de (si lo ha hecho) moverse
     for (int i = 0; i < fallingForm->pieces.length && canFall; i++)
     {
         Piece *piece = fallingForm->pieces.Get(i);
         int position = CoordsToPosition(piece->vector2d->x, piece->vector2d->y);
 
-        if(position + ROW_LENGTH <= 100){
+        if(position + ROW_LENGTH <= (TABLE_HEIGHT * TABLE_WIDTH)){
             if(*(ptr_table + (position + ROW_LENGTH)) != nullptr) canFall = false;
         }else{
             canFall = false;
         }
     }
     if(canFall){
-        fallingForm->PieceFall();
+        fallingForm->FallPieces();
     }
 
     return canFall;

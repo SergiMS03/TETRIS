@@ -20,4 +20,6 @@ class Controller{       // The class
     Controller();
 
     bool Go(char direction);
+
+    Form* newForm();
 };

@@ -11,7 +11,7 @@ public:
     Vectors2D *vector2d;
     Piece *me = this;
     Form *form;
-    bool mainPiece = false;
+    bool mainPiece;
 
     Piece(Vectors2D *vec, Form *form, bool mainPiece = false);
     Piece(int x, int y, Form *form, bool mainPiece = false);

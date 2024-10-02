@@ -19,6 +19,10 @@ public:
 
     bool Fall(Form *fallingForm);
  
+    void CalcLeft(List<Form*> *forms, Form *fallingForm, char direction);
+    void CalcRight(List<Form*> *forms, Form *fallingForm, char direction);
+    void RotationRight(List<Form*> *forms, Form *fallingForm, char direction);
+
     bool QuickCalc(List<Form*> *forms, Form *fallingForm, char direction);
     void FallingFormCalc(Form *fallingForm);
     bool ColisionCalc(Form *fallingForm, char direction);

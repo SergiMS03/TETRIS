@@ -22,12 +22,12 @@ Form::Form(int x, int y){
 
 void Form::setForm(){
     
-    int form = 1;
+    //int form = 1;
     Random *rand = new Random();
     color = rand->RandomIntBtw(CmdColors::MIN_COLOR_VALUE, CmdColors::MAX_COLOR_VALUE);
-    int xPosition = rand->RandomIntBtw(0, TABLE_WIDTH - 1);
+    //int xPosition = rand->RandomIntBtw(0, TABLE_WIDTH - 1);
     //int xPosition = 0;
-    switch (form)
+    /* switch (form)
     {
         case 1:{
             Square* sqr = new Square(xPosition, this);
@@ -41,27 +41,27 @@ void Form::setForm(){
             formName = LRight->NAME;
             break;
         }
-    }
+    } */
     delete rand;
 }
 
 void Form::setForm(int x, int y){
     
-    int form = 1;
+    //int form = 1;
     Random *rand = new Random();
     color = rand->RandomIntBtw(CmdColors::MIN_COLOR_VALUE, CmdColors::MAX_COLOR_VALUE);
-    switch (form)
+    /* switch (form)
     {
     case 1:
         Square* sqr = new Square(x, y, this);
         pieces = sqr->piecesSquare;
         formName = sqr->NAME;
         break;
-    }
+    } */
     delete rand;
 }
 
-void Form::PieceMove(int mov){
+void Form::MovePieces(int mov){
     for (int i = 0; i < this->pieces.length; i++)
     {
         Piece* piece = this->pieces.Get(i);
@@ -69,7 +69,7 @@ void Form::PieceMove(int mov){
     }
 }
 
-void Form::PieceFall(){
+void Form::FallPieces(){
     for (int i = 0; i < this->pieces.length; i++)
     {
         Piece* piece = this->pieces.Get(i);
@@ -82,3 +82,7 @@ void Form::setNull(){
     isNull = true;
 }
 
+
+void Form::RotateForm() {
+    // Implementación de la rotación
+}

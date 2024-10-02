@@ -24,8 +24,9 @@ class Form{
     void setForm();
     void setForm(int x, int y);
 
-    void PieceMove(int PiecePosition);
-    void PieceFall();
+    void MovePieces(int PiecePosition);
+    void FallPieces();
+    virtual void RotateForm();
     // Método para establecer el estado nulo
     void setNull();
 };

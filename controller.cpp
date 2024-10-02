@@ -4,6 +4,8 @@
 #include "Headers\controller.h"
 #include "Headers\table.h"
 #include "Headers\form.h"
+#include "Headers\square.h"
+#include "Headers\elRight.h"
 #include "Headers\doubleLinkedList.h"
 
 using namespace std;
@@ -13,7 +15,7 @@ Controller::Controller(){       // Constructor
     table = new Table();
         while (!gameOver)
         {
-            if(_kbhit()){
+            if(_kbhit()){//IMPLEMENTAR FUNCIONES SEPARADAS PARA CADA ACCIÓN Y ACTUALIZAR Tabla (renderTable)
                 switch (_getch())
                 {
                 case L_ARROW_INPUT: //Left
@@ -22,6 +24,10 @@ Controller::Controller(){       // Constructor
                 
                 case R_ARROW_INPUT://Right
                     direction = 'R';
+                    break;
+
+                case 114://Spin
+                    direction = 'S';
                     break;
                 }
             }
@@ -44,7 +50,8 @@ bool Controller::Go(char direction){
     table->RebootTable();
 
     if(fallingForm == nullptr){
-        fallingForm = new Form();
+
+        fallingForm = newForm();
     }
     bool formContact = table->QuickCalc(&listPieces, fallingForm, direction);
     if(!formContact){
@@ -55,6 +62,27 @@ bool Controller::Go(char direction){
     }
     table->RenderTable();
     return gameOver;
+}
+
+
+Form* Controller::newForm(){
+    Random *rand = new Random();
+    int form = rand->RandomIntBtw(1, 2);
+    int xPosition = rand->RandomIntBtw(0, TABLE_WIDTH - 1);
+    Form *chosedForm;
+    switch (form)
+    {
+        case 1:{
+            chosedForm = new Square(xPosition);
+            break;
+            }
+        case 2:{
+            chosedForm = new ElRight(xPosition);
+            break;
+        }
+    }
+    delete rand;
+    return chosedForm;
 }
 
 

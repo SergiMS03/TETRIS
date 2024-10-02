@@ -10,5 +10,7 @@ class Vectors2D{
 
     Vectors2D(int x, int y);
 
+    void SetCoords(int x, int y);
+
     void ToString();
 };

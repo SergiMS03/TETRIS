@@ -5,7 +5,7 @@
 
 using namespace std;
 
-Piece::Piece(Vectors2D *vec, Form *form, bool mainPiece = false)
+Piece::Piece(Vectors2D *vec, Form *form, bool mainPiece)
 {
     this->vector2d = vec;
     this->me = this;
@@ -13,7 +13,7 @@ Piece::Piece(Vectors2D *vec, Form *form, bool mainPiece = false)
     this->mainPiece = mainPiece;
 }
 
-Piece::Piece(int x, int y, Form *form, bool mainPiece = false)
+Piece::Piece(int x, int y, Form *form, bool mainPiece)
 {
     this->vector2d = new Vectors2D(x, y);
     this->me = this;
