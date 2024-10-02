@@ -21,6 +21,12 @@ int CmdColors::white = 15;
 
 HANDLE Console::hConsole = GetStdHandle( STD_OUTPUT_HANDLE );
 
+void Console::EraseCursor(){
+    CONSOLE_CURSOR_INFO cci;
+    cci.bVisible = false;
+    SetConsoleCursorInfo(hConsole, &cci);
+}
+
 void Console::TextColor(string colorStr){
     int colorNum = 0;
     if (colorStr == "dark_blue") {

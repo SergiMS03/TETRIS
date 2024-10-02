@@ -7,6 +7,7 @@
 #define GAP_TIME 500
 #define L_ARROW_INPUT 75
 #define R_ARROW_INPUT 77
+#define SPIN_ARROW_INPUT 114
 
 class Controller{       // The class
     public:             // Access specifier

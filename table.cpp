@@ -110,7 +110,77 @@ void Table::RebootTable(){
     }
 }
 
-bool Table::QuickCalc(List<Form*> *forms, Form *fallingForm, char direction){    
+bool Table::MoveLeft(Form *fallingForm){
+    bool canMove = true;
+    ptr_table = tableStart;
+    for (int i = 0; i < fallingForm->pieces.length && canMove; i++)
+    {
+        Piece *piece = fallingForm->pieces.Get(i);
+        int position = CoordsToPosition(piece->vector2d->x, piece->vector2d->y);
+
+        
+        if(piece->vector2d->x == 0 || *(ptr_table + (position + MOVE_LEFT)) != nullptr){
+            canMove = false;
+        }
+    }
+    if(canMove){
+        fallingForm->MovePieces(MOVE_LEFT);
+    }
+    return canMove;
+} 
+
+bool Table::MoveRight(Form *fallingForm){
+    bool canMove = true;
+    ptr_table = tableStart;
+    for (int i = 0; i < fallingForm->pieces.length && canMove; i++)
+    {
+        Piece *piece = fallingForm->pieces.Get(i);
+        int position = CoordsToPosition(piece->vector2d->x, piece->vector2d->y);
+
+        if(piece->vector2d->x == (TABLE_WIDTH - 1) || *(ptr_table + (position + MOVE_RIGHT)) != nullptr){
+            canMove = false;
+        }
+    }
+    if(canMove){
+        fallingForm->MovePieces(MOVE_RIGHT);
+    }
+    return canMove;
+}
+
+bool Table::Spin(Form *fallingForm){
+    bool canSpin = true;
+    List<Vectors2D*> *OldPositions = new List<Vectors2D*>;
+    for (int i = 0; i < fallingForm->pieces.length; i++)
+    {
+        OldPositions->Add(new Vectors2D(fallingForm->pieces.Get(i)->vector2d->x, fallingForm->pieces.Get(i)->vector2d->y));
+    }
+    
+    fallingForm->RotateForm();//Rotamos la pieza
+    for (int i = 0; i < fallingForm->pieces.length && canSpin; i++)
+    {
+        ptr_table = tableStart;
+        Piece *piece = fallingForm->pieces.Get(i);
+        int position = CoordsToPosition(piece->vector2d->x, piece->vector2d->y);
+
+        //Comprobamos que realmente pueda rotar de esa manera
+        ptr_table += position;
+        if((piece->vector2d->x < 0 || piece->vector2d->x > (TABLE_WIDTH - 1) || piece->vector2d->y < 0 || piece->vector2d->y > (TABLE_HEIGHT - 1)) || *(ptr_table) != nullptr){
+            canSpin = false;
+        }
+    }
+    if(!canSpin){//Si no puede la dejamos igual que al inicio
+        for (int i = 0; i < fallingForm->pieces.length; i++)
+        {
+            fallingForm->pieces.Get(i)->vector2d->SetCoords(OldPositions->Get(i)->x, OldPositions->Get(i)->y);
+        }
+        fallingForm->UndoSpin();
+    }
+    delete OldPositions;
+    OldPositions = nullptr;
+    return canSpin;
+}
+
+void Table::AssembleTable(List<Form*> *forms, Form *fallingForm){    
     //Carga las piezas en la tabla 
     for (int i = 0; i < forms->length; i++)
     {
@@ -124,60 +194,14 @@ bool Table::QuickCalc(List<Form*> *forms, Form *fallingForm, char direction){
             *ptr_table = piece;
         }
     }
-    
-    bool canFall = ColisionCalc(fallingForm, direction);
-
-    FallingFormCalc(fallingForm);
-    
-    return canFall;
 }
 
-bool Table::ColisionCalc(Form *fallingForm, char direction){
+bool Table::Fall(Form *fallingForm){
+    //Intenta que la forma siga cayendo si es que aún tiene sitio
     ptr_table = tableStart;
     const int ROW_LENGTH = TABLE_WIDTH;
     bool canFall = true;
-    bool canMove = true;
 
-    int rowOperator = 0;
-    if(direction == 'L'){
-        rowOperator = MOVE_LEFT;
-        
-    }
-    else if(direction == 'R'){
-        rowOperator = MOVE_RIGHT;
-        
-    }
-    else if(direction == 'S'){
-        rowOperator = 82;
-        
-    }
-
-    //Comprueba si la pieza puede moverse
-    if (rowOperator == 0 || rowOperator == 82) canMove = false;
-    for (int i = 0; i < fallingForm->pieces.length && canMove; i++)
-    {
-        Piece *piece = fallingForm->pieces.Get(i);
-        int position = CoordsToPosition(piece->vector2d->x, piece->vector2d->y);
-
-        if(position + rowOperator <= (TABLE_HEIGHT * TABLE_WIDTH) && position + rowOperator > 0){
-            if (position == 0 && rowOperator == MOVE_LEFT) canMove = false;
-            if (position == (TABLE_WIDTH - 1) && rowOperator == MOVE_RIGHT) canMove = false;
-            if (*(ptr_table + (position + rowOperator)) != nullptr) canMove = false;
-        }else{
-            canMove = false;
-        }
-    }
-    if(canMove){
-        fallingForm->MovePieces(rowOperator);
-    }
-    
-    if (rowOperator == 82)
-    {
-        fallingForm->RotateForm();
-    }
-    
-
-    //Comprueba si la pieza puede caerse despues de (si lo ha hecho) moverse
     for (int i = 0; i < fallingForm->pieces.length && canFall; i++)
     {
         Piece *piece = fallingForm->pieces.Get(i);
@@ -196,7 +220,7 @@ bool Table::ColisionCalc(Form *fallingForm, char direction){
     return canFall;
 }
 
-void Table::FallingFormCalc(Form *fallingForm){
+void Table::PlaceFallingForm(Form *fallingForm){
 for (int i = 0; i < fallingForm->pieces.length; i++)
     {
         ptr_table = tableStart;

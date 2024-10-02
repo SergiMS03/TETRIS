@@ -9,7 +9,6 @@ class ElRight : public Form{
     public:
     const string NAME = "ElRight";
     const int MAX_COLUMN = 8;
-    int orientation = 0;
     //List<Piece*> piecesElRight;
     
 ElRight(int x) : Form(){
@@ -24,9 +23,9 @@ ElRight(int x) : Form(){
 };
 
 ElRight(int x, int y): Form(){
-    pieces.Add(new Piece(x, y, this));//x y
-    pieces.Add(new Piece(x, 1 + y, this, true));
-    pieces.Add(new Piece(x, 2 + y, this));
+    pieces.Add(new Piece(x, y - 1, this));//x y
+    pieces.Add(new Piece(x, y, this, true));
+    pieces.Add(new Piece(x, y + 1, this));
     pieces.Add(new Piece(1 + x, 2 + y, this));
 };
 

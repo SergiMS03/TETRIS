@@ -12,6 +12,7 @@ class Console{
     static HANDLE hConsole;
 
     public:
+    static void EraseCursor();
     static void TextColor(string colorStr);
     static void TextColor(int colorNum);
 };

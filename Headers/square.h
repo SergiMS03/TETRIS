@@ -9,7 +9,6 @@ class Square : public Form{
     public:
     const string NAME = "square";
     const int MAX_COLUMN = 8;
-    int orientation = 0;
     
     
     Square(int x) : Form(){

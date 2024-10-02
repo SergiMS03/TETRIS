@@ -82,6 +82,9 @@ void Form::setNull(){
     isNull = true;
 }
 
+void Form::UndoSpin(){
+    orientation--;
+}
 
 void Form::RotateForm() {
     // Implementación de la rotación

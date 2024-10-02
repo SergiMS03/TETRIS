@@ -11,6 +11,7 @@ class Form{
     public:             
     bool isNull;
     int color;
+    int orientation;
     List<Piece*> pieces;
     string formName;
 
@@ -27,6 +28,7 @@ class Form{
     void MovePieces(int PiecePosition);
     void FallPieces();
     virtual void RotateForm();
+    void UndoSpin();
     // Método para establecer el estado nulo
     void setNull();
 };

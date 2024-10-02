@@ -3,7 +3,7 @@
 #include "piece.h"
 #include "form.h"
 
-#define TABLE_HEIGHT 10
+#define TABLE_HEIGHT 15
 #define TABLE_WIDTH 10
 #define EMPTY_BOX -1
 #define MOVE_LEFT -1
@@ -16,23 +16,22 @@ public:
     Piece **ptr_table;
 
     Table();
-
-    bool Fall(Form *fallingForm);
  
-    void CalcLeft(List<Form*> *forms, Form *fallingForm, char direction);
-    void CalcRight(List<Form*> *forms, Form *fallingForm, char direction);
-    void RotationRight(List<Form*> *forms, Form *fallingForm, char direction);
+    bool MoveLeft(Form *fallingForm);
+    bool MoveRight(Form *fallingForm);
+    bool Spin(Form *fallingForm);
+    bool Fall(Form *fallingForm);
 
-    bool QuickCalc(List<Form*> *forms, Form *fallingForm, char direction);
-    void FallingFormCalc(Form *fallingForm);
-    bool ColisionCalc(Form *fallingForm, char direction);
-    int CoordsToPosition(int x, int y);
+    void DeleteRow(int y, List<Form*> *forms);
+
+    void AssembleTable(List<Form*> *forms, Form *fallingForm);
+    void PlaceFallingForm(Form *fallingForm);
 
     int CheckForLine(List<Form*> *forms);
     bool CheckGameOver(List<Form*> *forms);
-    void DeleteRow(int y, List<Form*> *forms);
+    
+    int CoordsToPosition(int x, int y);
 
     void RenderTable();
-
     void RebootTable();
 };
