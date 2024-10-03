@@ -8,22 +8,17 @@
 class Line : public Form{
     public:
     const string NAME = "Line";
-    const int MAX_COLUMN = 8;
-    //List<Piece*> piecesElRight;
     
 Line(int x) : Form(){
-    while (x > MAX_COLUMN)
-    {
-        x--;
-    }
-    pieces.Add(new Piece(x, -3, this));//x y
+    color = 11;
+    pieces.Add(new Piece(x, -3, this));
     pieces.Add(new Piece(x, -2, this, true));
     pieces.Add(new Piece(x, -1, this));
     pieces.Add(new Piece(x, 0, this));
 };
 
 Line(int x, int y): Form(){
-    pieces.Add(new Piece(x, y - 1, this));//x y
+    pieces.Add(new Piece(x, y - 1, this));
     pieces.Add(new Piece(x, y, this, true));
     pieces.Add(new Piece(x, y + 1, this));
     pieces.Add(new Piece(x, y + 2, this));

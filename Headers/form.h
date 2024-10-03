@@ -31,4 +31,5 @@ class Form{
     void UndoSpin();
     // Método para establecer el estado nulo
     void setNull();
+    void ToString();
 };

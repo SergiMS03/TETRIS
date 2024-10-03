@@ -12,12 +12,12 @@ using namespace std;
 
 Form::Form(){
     isNull = false;
-    this->setForm();
+    //this->setForm();
 }
 
 Form::Form(int x, int y){
     isNull = false;
-    this->setForm(x, y);
+    //this->setForm(x, y);
 }
 
 void Form::setForm(){
@@ -80,6 +80,13 @@ void Form::FallPieces(){
 // Método para establecer el estado nulo
 void Form::setNull(){
     isNull = true;
+}
+
+void Form::ToString(){
+    for (int i = 0; i < pieces.length; i++)
+    {
+        pieces.Get(i)->ToString();
+    }
 }
 
 void Form::UndoSpin(){

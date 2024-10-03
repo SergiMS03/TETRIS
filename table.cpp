@@ -25,7 +25,7 @@ int Table::CheckForLine(List<Form*> *forms){
         }
         if(line){
             DeleteRow(y, forms);
-            obtainedPoints++;
+            obtainedPoints += 10;
         }
     }
     return obtainedPoints;

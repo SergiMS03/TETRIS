@@ -12,6 +12,7 @@ class Square : public Form{
     
     
     Square(int x) : Form(){
+        color = 6;
         while (x > MAX_COLUMN)
         {
             x--;
@@ -32,7 +33,5 @@ class Square : public Form{
     };
 
     void RotateForm() override{}
-
-    void ToString();
 
 };

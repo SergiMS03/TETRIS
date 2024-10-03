@@ -7,7 +7,11 @@
 #include "Headers\form.h"
 #include "Headers\square.h"
 #include "Headers\elRight.h"
+#include "Headers\elLeft.h"
 #include "Headers\line.h"
+#include "Headers\zi.h"
+#include "Headers\ziInverted.h"
+#include "Headers\ti.h"
 #include "Headers\doubleLinkedList.h"
 
 using namespace std;
@@ -39,7 +43,7 @@ Controller::Controller(){       // Constructor
                     break;
                 }
                 table->PlaceFallingForm(fallingForm);
-                cout << points << "\n";
+                //cout << points << "\n";
                 table->RenderTable();
             }
             auto now = chrono::system_clock::now();
@@ -80,7 +84,7 @@ bool Controller::Go(char direction){
 
 Form* Controller::newForm(){
     Random *rand = new Random();
-    int form = rand->RandomIntBtw(1, 3);
+    int form = rand->RandomIntBtw(1, 7);
     int xPosition = rand->RandomIntBtw(0, TABLE_WIDTH - 1);
     Form *chosedForm;
     switch (form)
@@ -94,7 +98,23 @@ Form* Controller::newForm(){
             break;
         }
         case 3:{
+            chosedForm = new ElLeft(xPosition);
+            break;
+        }
+        case 4:{
             chosedForm = new Line(xPosition);
+            break;
+        }
+        case 5:{
+            chosedForm = new Zi(xPosition);
+            break;
+        }
+        case 6:{
+            chosedForm = new ZiInverted(xPosition);
+            break;
+        }
+        case 7:{
+            chosedForm = new Ti(xPosition);
             break;
         }
     }

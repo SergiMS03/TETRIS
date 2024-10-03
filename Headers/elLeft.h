@@ -5,29 +5,24 @@
 
 
 
-class ElRight : public Form{
+class ElLeft : public Form{
     public:
-    const string NAME = "ElRight";
-    const int MAX_COLUMN = 8;
+    const string NAME = "ElLeft";
     
-ElRight(int x) : Form(){
-    color = 8;
-    while (x > MAX_COLUMN)
-    {
-        x--;
-    }
+ElLeft(int x) : Form(){
+    color = 9;
     pieces.Add(new Piece(x, -2, this));
     pieces.Add(new Piece(x, -1, this, true));
     pieces.Add(new Piece(x, 0, this));
-    pieces.Add(new Piece(1 + x, 0, this));
+    pieces.Add(new Piece(x - 1, 0, this));
 };
 
-ElRight(int x, int y): Form(){
-    color = 14;
-    pieces.Add(new Piece(x, y - 1, this));
-    pieces.Add(new Piece(x, y, this, true));
-    pieces.Add(new Piece(x, y + 1, this));
-    pieces.Add(new Piece(1 + x, 2 + y, this));
+ElLeft(int x, int y): Form(){
+    color = 9;
+    pieces.Add(new Piece(x, y - 2, this));
+    pieces.Add(new Piece(x, y - 1, this, true));
+    pieces.Add(new Piece(x, y, this));
+    pieces.Add(new Piece(1 - x, y, this));
 };
 
 void RotateForm() override{
@@ -42,22 +37,22 @@ void RotateForm() override{
     case 0:
         pieces.Get(0)->vector2d->SetCoords(mainPiece->vector2d->x, mainPiece->vector2d->y - 1);
         pieces.Get(2)->vector2d->SetCoords(mainPiece->vector2d->x, mainPiece->vector2d->y + 1);
-        pieces.Get(3)->vector2d->SetCoords(mainPiece->vector2d->x + 1, mainPiece->vector2d->y + 1);
+        pieces.Get(3)->vector2d->SetCoords(mainPiece->vector2d->x - 1, mainPiece->vector2d->y + 1);
         break;
     case 1:
         pieces.Get(0)->vector2d->SetCoords(mainPiece->vector2d->x - 1, mainPiece->vector2d->y);
         pieces.Get(2)->vector2d->SetCoords(mainPiece->vector2d->x + 1, mainPiece->vector2d->y);
-        pieces.Get(3)->vector2d->SetCoords(mainPiece->vector2d->x + 1, mainPiece->vector2d->y - 1);
+        pieces.Get(3)->vector2d->SetCoords(mainPiece->vector2d->x + 1, mainPiece->vector2d->y + 1);
         break;
     case 2:
         pieces.Get(0)->vector2d->SetCoords(mainPiece->vector2d->x, mainPiece->vector2d->y + 1);
         pieces.Get(2)->vector2d->SetCoords(mainPiece->vector2d->x, mainPiece->vector2d->y - 1);
-        pieces.Get(3)->vector2d->SetCoords(mainPiece->vector2d->x - 1, mainPiece->vector2d->y - 1);
+        pieces.Get(3)->vector2d->SetCoords(mainPiece->vector2d->x + 1, mainPiece->vector2d->y - 1);
         break;
     case 3:
         pieces.Get(0)->vector2d->SetCoords(mainPiece->vector2d->x + 1, mainPiece->vector2d->y);
         pieces.Get(2)->vector2d->SetCoords(mainPiece->vector2d->x - 1, mainPiece->vector2d->y);
-        pieces.Get(3)->vector2d->SetCoords(mainPiece->vector2d->x - 1, mainPiece->vector2d->y + 1);
+        pieces.Get(3)->vector2d->SetCoords(mainPiece->vector2d->x - 1, mainPiece->vector2d->y - 1);
         break;
     }
 }
