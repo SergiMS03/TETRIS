@@ -16,13 +16,13 @@
 
 using namespace std;
 
-Controller::Controller(){       // Constructor
+Controller::Controller(){
     Console::EraseCursor();
     auto start = chrono::system_clock::now();
     table = new Table();
         while (!gameOver)
         {
-            if(kbhit() && fallingForm){//IMPLEMENTAR FUNCIONES SEPARADAS PARA CADA ACCIÓN Y ACTUALIZAR Tabla (renderTable)
+            if(kbhit() && fallingForm){
                 char input = getch(); 
                 //cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"; 
                 system("cls");
@@ -30,6 +30,9 @@ Controller::Controller(){       // Constructor
                 table->AssembleTable(&listPieces, fallingForm);
                 switch (input)
                 {
+                case U_ARROW://Spin (R)
+                    table->Spin(fallingForm);
+                    break;
                 case L_ARROW_INPUT: //Left
                     table->MoveLeft(fallingForm);
                     break;
@@ -37,28 +40,35 @@ Controller::Controller(){       // Constructor
                 case R_ARROW_INPUT://Right
                     table->MoveRight(fallingForm);
                     break;
-
-                case SPIN_ARROW_INPUT://Spin (R)
-                    table->Spin(fallingForm);
+                case D_ARROW://Down
+                    gameOver = Go();
+                    points++;
+                    break;
+                case SPACE:
+                    while (fallingForm)
+                    {
+                        gameOver = Go();
+                        points += 2 ;
+                    }
                     break;
                 }
-                table->PlaceFallingForm(fallingForm);
-                //cout << points << "\n";
-                table->RenderTable();
+                if(fallingForm){//Si no es null colocaremos la pieza y renderizaremos la tabla
+                    table->PlaceFallingForm(fallingForm);
+                    //cout << points << "\n";
+                    table->RenderTable();
+                }
             }
             auto now = chrono::system_clock::now();
             chrono::duration<float,milli> duration = now - start;
             if(duration.count() > GAP_TIME){
                 start = now;
-                
-                gameOver = Go(direction);
-                direction = ' ';
+                gameOver = Go();
             }
         }
     delete table;
 }
 
-bool Controller::Go(char direction){
+bool Controller::Go(){
     //cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"; 
     system("cls");
     table->RebootTable();
